@@ -3,6 +3,8 @@ var turn = -1,
     oWin = 0,
     xWin = 0;
 var cells;
+
+
 function drawCells(){
     var b = document.board;
 
@@ -12,9 +14,6 @@ function drawCells(){
     //1 2 3
     cells = new Array(b.c1,b.c2,b.c3,b.c4,b.c5,b.c6,b.c7,b.c8,b.c9)
 }
-
-
-
 
 function getLegalMoves(state){
     var moves = 0;
@@ -119,14 +118,6 @@ function detectWinMove(state, cellNum, nextTurn){
     return detectWin(newState);
 }
 
-function beginnerMove(){
-    var state = getState();
-    var winner = detectWin(state);
-    if (winner == 0) moveRandom(getLegalMoves(state));
-}
-
-
-
 
 function getState(){
     //because we have "" X O three state for one blank, 
@@ -200,15 +191,15 @@ function detectWin(state){
     return 0;
 }       
 
-function recordWin(winner){
-    if ((winner & 0x300000) == 0x100000){
-        xWon++;
-    } else if ((winner & 0x300000) == 0x200000){
-        oWon++;
-    } else if ((winner & 0x300000) == 0x300000){
-        tie++;
-    }
-}
+//function recordWin(winner){
+    //if ((winner & 0x300000) == 0x100000){
+        //xWon++;
+    //} else if ((winner & 0x300000) == 0x200000){
+        //oWon++;
+    //} else if ((winner & 0x300000) == 0x300000){
+        //tie++;
+    //}
+//}
 
 function stateMove(state, move, nextTurn){
     var value = 0x3;
@@ -219,9 +210,9 @@ function stateMove(state, move, nextTurn){
 function nextTurn(){
     turn = -turn;
     if(turn == 1){
-        if(document.board.firstMove[1].checked) beginnerMove();
+        if(document.board.real[1].checked) perfectMove();
     }else {
-        if(document.board.firstMove[0].checked) beginnerMove();
+        if(document.board.real[0].checked) perfectMove();
     }
 }
 
@@ -267,19 +258,15 @@ function drawState(state){
             }
         }
 
-
-
+        //paint the winner red background
         if ((winner & (1<<(i*2+1))) != 0){
-            if (cells[i].style){
-                cells[i].style.backgroundColor='red';
-            } else {
-                value = '*' + value + '*';
-            }
+            cells[i].style.backgroundColor='red';
         } else {
-            if (cells[i].style){
+            if (cells[i].style.backgroundColor == "red"){
                 cells[i].style.backgroundColor='#3498db';
             }
         }
+
         cells[i].value = value;
     }
 }
