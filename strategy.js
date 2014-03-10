@@ -1,5 +1,7 @@
-var turn = -1;
-
+var turn = -1,
+    tie = 0,
+    oWin = 0,
+    xWin = 0;
 var cells;
 function drawCells(){
     var b = document.board;
@@ -13,31 +15,6 @@ function drawCells(){
 
 
 
-function nextTurn(){
-    turn = -turn;
-
-    //it's O turn
-    if(turn == 1){
-        //X is human
-        if(document.board.firstMove[0].checked) beginnerMove();
-    }else {
-        //X's turn and O is human
-        if(document.board.firstMove[1].checked) beginnerMove();
-    }
-
-    //if (turn == 1){
-        
-        //if(document.board.p1.selectedIndex == 1) beginnerMove();
-        //if(document.board.p1.selectedIndex == 2) intermediateMove();
-        //if(document.board.p1.selectedIndex == 3) experiencedMove();
-        //if(document.board.p1.selectedIndex == 4) perfectMove();
-    //} else {
-        //if(document.board.p2.selectedIndex == 1) beginnerMove();
-        //if(document.board.p2.selectedIndex == 2) intermediateMove();
-        //if(document.board.p2.selectedIndex == 3) experiencedMove();
-        //if(document.board.p2.selectedIndex == 4) perfectMove();
-    //}
-}
 
 function getLegalMoves(state){
     var moves = 0;
@@ -148,48 +125,13 @@ function beginnerMove(){
     if (winner == 0) moveRandom(getLegalMoves(state));
 }
 
-function getGoodMove(state){
-	var moves = getLegalMoves(state);
-    for (var i=0; i<9; i++){
-        if ((moves & (1<<i)) != 0) {
-            if (detectWinMove(state, i, turn)){
-                move(cells[i]);
-                return 0;
-            }
-        }
-    }
-    for (var j=0; j<9; j++){
-        if ((moves & (1<<j)) != 0) {
-            if (detectWinMove(state, j, -turn)){
-                move(cells[j]);
-                return 0;
-            }
-        }
-    }
-    return moves;
-}
 
 
-function intermediateMove(){
-    var state = getState();
-    var winner = detectWin(state);
-    if (winner == 0) {
-        moveRandom(getGoodMove(state));
-    }
-}
-
-function experiencedMove(){
-    var state = getState();
-    var winner = detectWin(state);
-    if (winner == 0) {
-        var moves = openingBook(state);
-        if (state == 0) moves = 0x145;
-        if (moves == 0) moves = getGoodMove(state);
-        moveRandom(moves);
-    }
-}
 
 function getState(){
+    //because we have "" X O three state for one blank, 
+    //so we need 2 bit for each blank.
+
     var state = 0;
     for (var i=0; i<9; i++){
         var cell = cells[i];
@@ -213,8 +155,6 @@ function detectWin(state){
     //1: x: 0x0000c o: 0x00008
     //0: x: 0x00003 o: 0x00002
 
-    
-
     //789   3f000
     //456   00fc0
     //123   0003f
@@ -226,6 +166,9 @@ function detectWin(state){
     //357   03330
     //159   30303
 
+    //&3000000 == 3000000 tie
+    ///&3000000 == 2000000 owin
+    ///&3000000 == 1000000 xwin
 
     if ((state & 0x3F000) == 0x3F000) return 0x13F000;
     if ((state & 0x3F000) == 0x2A000) return 0x22A000;
@@ -251,7 +194,8 @@ function detectWin(state){
     if ((state & 0x30303) == 0x30303) return 0x130303;
     if ((state & 0x30303) == 0x20202) return 0x220202;
 
-    //what's this
+    //this is tie situation, because 0x03 and 0x02 both have 1 bit of 1, so we check if 
+    //all the 1 bit exist in 9 blank, we can be sure that it's a tie
     if ((state & 0x2AAAA) == 0x2AAAA) return 0x300000;
     return 0;
 }       
@@ -262,7 +206,7 @@ function recordWin(winner){
     } else if ((winner & 0x300000) == 0x200000){
         oWon++;
     } else if ((winner & 0x300000) == 0x300000){
-        catsGame++;
+        tie++;
     }
 }
 
@@ -272,20 +216,29 @@ function stateMove(state, move, nextTurn){
     return (state | (value << (move*2)));
 }
 
+function nextTurn(){
+    turn = -turn;
+    if(turn == 1){
+        if(document.board.firstMove[1].checked) beginnerMove();
+    }else {
+        if(document.board.firstMove[0].checked) beginnerMove();
+    }
+}
+
 function move(cell){
     if (cell.value == ''){
         var state = getState();
         var winner = detectWin(state);
-        
 
-        //if (winner == 0){
-            //for (var i=0; i<9; i++){
-                //if (cells[i] == cell){
-                    //state = stateMove(state, i, turn);
-                //}
-            //}
-            //nextTurn();
-        //}
+        if (winner == 0){
+            for (var i=0; i<9; i++){
+                if (cells[i] == cell){
+                    state = stateMove(state, i, turn);
+                }
+            }
+            drawState(state);
+            nextTurn();
+        }
     }
 }
 
@@ -299,22 +252,41 @@ function countMoves(state){
     return count;
 }
 
-function newGame(){
-    //var state = getState();
-    //var winner = detectWin(state);
-    //if (winner == 0 && countMoves(state) > 1){
-        //if (turn == 1) oWon++;
-        //else xWon++;
-    //}
+function drawState(state){
+    var winner = detectWin(state);
 
-    //-1 X  1 O 
-    //if (document.board.firstMove[0].checked=='1'){
-        ////turn == -1 means X first
-        //turn = -1;
-    //} else {
-        ////turn == 1 means O first
-        //turn = 1;
-    //}
+    for (var i=0; i<9; i++){
+        var value = '';
+        if ((state & (1<<(i*2+1))) != 0){
+            if ((state & (1<<(i*2))) != 0){
+                //11,  so it's X
+                value = 'X';
+            } else {
+                //10, so it's O
+                value = 'O';
+            }
+        }
+
+
+
+        if ((winner & (1<<(i*2+1))) != 0){
+            if (cells[i].style){
+                cells[i].style.backgroundColor='red';
+            } else {
+                value = '*' + value + '*';
+            }
+        } else {
+            if (cells[i].style){
+                cells[i].style.backgroundColor='#3498db';
+            }
+        }
+        cells[i].value = value;
+    }
+}
+
+function newGame(){
+    turn = -1;
+    drawState(0);
     nextTurn();
 }
 
