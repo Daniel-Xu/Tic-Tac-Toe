@@ -8,30 +8,51 @@ var cells;
 function drawCells(){
     var b = document.board;
 
-    //cells are 9 button
+    //cells are 9 input 
     //7 8 9 
     //4 5 6 
     //1 2 3
     cells = new Array(b.c1,b.c2,b.c3,b.c4,b.c5,b.c6,b.c7,b.c8,b.c9)
 }
 
+//just test whether it's blank
+function isCellBlank(state, cellnum)
+{
+    return ((state & (1<<(cellnum*2+1))) == 0)
+}
+
+function isCellSet(state, cellnum)
+{
+    return ((state & (1<<(cellnum*2+1))) != 0)
+}
+
+// - - - - - - - - -
+// 8 7 6 5 4 3 2 1 0
 function getLegalMoves(state){
     var moves = 0;
     for (var i=0; i<9; i++){
-        if ((state & (1<<(i*2+1))) == 0){
+        if(isCellBlank(state,i)){
             moves |= 1 << i;
         }
     }
     return moves;
 }
 
-function moveRandom(moves){
-    var numMoves = 0;
+function availableMoveNum(moves)
+{
+    var num = 0;
     for (var i=0; i<9; i++){
-        if ((moves & (1<<i)) != 0) numMoves++;
+        if ((moves & (1<<i)) != 0) num++;
     }
+
+    return num;
+}
+
+function moveRandom(moves){
+    var numMoves = availableMoveNum(moves);
     if (numMoves > 0){
-        var moveNum = Math.ceil(Math.random()*numMoves);
+        //moveNum is random num in [1, numMove]
+        var moveNum = Math.floor(Math.random()*numMoves +1);
         numMoves = 0;
         for (var j=0; j<9; j++){
             if ((moves & (1<<j)) != 0) numMoves++;
@@ -43,18 +64,38 @@ function moveRandom(moves){
     }
 }
 
-function openingBook(state){
+
+//  -  -  -  -  -  -  -  -  - - - - - - - - - -
+// 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1
+function knownStrategy(state){
     var mask = state & 0x2AAAA;	
+
+    //all blank
     if (mask == 0x00000) return 0x1FF;
+
+    //4 center 
+    //if one player fills the center, the best move will be 
+    //corner, or you will lose
+    
 	if (mask == 0x00200) return 0x145;
+
+    //0 2 6 8  
+    //if corner is filled, then you must take the center
+    //or you will fail quickly
+
     if (mask == 0x00002 ||
         mask == 0x00020 ||
         mask == 0x02000 ||
         mask == 0x20000) return 0x010;
+
+    //1 3 5 7 edge
+    // if one use choose edges, the other should choose cell that are in same row
+    // or column
     if (mask == 0x00008) return 0x095;
     if (mask == 0x00080) return 0x071;
     if (mask == 0x00800) return 0x11C;
     if (mask == 0x08000) return 0x152;
+
     return 0;
 }
 
@@ -64,7 +105,9 @@ function perfectMove(){
     if (winner == 0){
         var moves = getLegalMoves(state);
         var hope = -999;
-        var goodMoves = openingBook(state);
+        var goodMoves = knownStrategy(state);
+        
+        //not blank or just one scenario 
         if (goodMoves == 0){
             for (var i=0; i<9; i++){
                 if ((moves & (1<<i)) != 0) {
@@ -110,6 +153,9 @@ function moveValue(istate, move, moveFor, nextTurn, limit, depth){
     }
     return hope;
 }
+
+
+
 
 function detectWinMove(state, cellNum, nextTurn){
     var value = 0x3;
@@ -191,29 +237,21 @@ function detectWin(state){
     return 0;
 }       
 
-//function recordWin(winner){
-    //if ((winner & 0x300000) == 0x100000){
-        //xWon++;
-    //} else if ((winner & 0x300000) == 0x200000){
-        //oWon++;
-    //} else if ((winner & 0x300000) == 0x300000){
-        //tie++;
-    //}
-//}
-
-function stateMove(state, move, nextTurn){
-    var value = 0x3;
-    if (nextTurn == -1) value = 0x2;
-    return (state | (value << (move*2)));
-}
 
 function nextTurn(){
+    //here the turn means nextTurn
     turn = -turn;
     if(turn == 1){
         if(document.board.real[1].checked) perfectMove();
     }else {
         if(document.board.real[0].checked) perfectMove();
     }
+}
+
+function stateMove(state, move, nextTurn){
+    var value = 0x3;
+    if (nextTurn == -1) value = 0x2;
+    return (state | (value << (move*2)));
 }
 
 function move(cell){
@@ -233,22 +271,13 @@ function move(cell){
     }
 }
 
-function countMoves(state){
-    var count = 0;
-    for (var i=0; i<9; i++){
-        if ((state & (1<<(i*2+1))) != 0){
-           count++;
-        }
-    }
-    return count;
-}
 
 function drawState(state){
     var winner = detectWin(state);
 
     for (var i=0; i<9; i++){
         var value = '';
-        if ((state & (1<<(i*2+1))) != 0){
+        if (isCellSet(state, i)){
             if ((state & (1<<(i*2))) != 0){
                 //11,  so it's X
                 value = 'X';
