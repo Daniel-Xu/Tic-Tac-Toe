@@ -104,18 +104,22 @@ function perfectMove(){
     var winner = detectWin(state);
     if (winner == 0){
         var moves = getLegalMoves(state);
+
+        //Because the AI is unbeatable, so this is the minimum scenario
         var hope = -999;
         var goodMoves = knownStrategy(state);
         
         //not blank or just one scenario 
         if (goodMoves == 0){
             for (var i=0; i<9; i++){
+                //for these legal move
                 if ((moves & (1<<i)) != 0) {
-                    var value = moveValue(state, i, turn, turn, 15, 1);
+                    var value = moveValue(state, i, turn, turn, 1);
                     if (value > hope){
                         hope = value;
                         goodMoves = 0;
                     }
+                    //get all the possible best move
                     if (hope == value){
                         goodMoves |= (1<<i);
                     }
@@ -126,35 +130,40 @@ function perfectMove(){
     }
 }
 
+//depth is to make sure that the AI will not lose himself too early
+//moveFor == nextTurn -> AI 
 function moveValue(istate, move, moveFor, nextTurn, limit, depth){
+    //simulate the state
     var state = stateMove(istate, move, nextTurn);
-    var winner = detectWin(state);
+    var winner = detectWin(state)
+
     if ((winner & 0x300000) == 0x300000){
         return 0;
     } else if (winner != 0){
         if (moveFor == nextTurn) return 10 - depth;
         else return depth - 10;
     }
+    
+    //if the the current operation is not the same with the original, minimum scenario
+    //if the the current operation is the same with the original, maximum scenario
     var hope = 999;
     if (moveFor != nextTurn) hope = -999;
-    if(depth == limit) return hope;
+    //if(depth == limit) return hope;
+    
+
     var moves = getLegalMoves(state);
     for (var i=0; i<9; i++){
         if ((moves & (1<<i)) != 0) {
-            var value = moveValue(state, i, moveFor, -nextTurn, 10-Math.abs(hope), depth+1);
-            if (Math.abs(value) != 999){
-                if (moveFor == nextTurn && value < hope){
-                    hope = value;
-                } else if (moveFor != nextTurn && value > hope){
-                    hope = value;
-                }
-            }
+            var value = moveValue(state, i, moveFor, -nextTurn, depth+1);
+           
+            if (moveFor == nextTurn && value < hope  ||moveFor != nextTurn && value > hope ){
+                hope = value;
+            }            
         }
     }
+
     return hope;
 }
-
-
 
 
 function detectWinMove(state, cellNum, nextTurn){
