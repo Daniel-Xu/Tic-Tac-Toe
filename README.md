@@ -23,4 +23,7 @@ strategy
 * if one player fills one of the four edges, the other one should choose cell that are in the same row or column with the chosen one.  
 
 
+algorithm
+---------
 
+MinMax: here is a good [post](http://www.neverstopbuilding.com/minimax) about how the algorithm works
