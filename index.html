@@ -7,7 +7,7 @@
     <script type="text/javascript" charset="utf-8" src="strategy.js"></script>
   </head>
 
-  <body onload="drawCells(); newGame();" >
+  <body onload="strategy.drawCells(); strategy.newGame();" >
 
     <form name="board" onsubmit="return false;">
       <table border="0">
@@ -16,18 +16,18 @@
             <td valign="top">
               <table align="left" class="board" cellspacing="6">
                 <tbody><tr>
-                    <td class="cell"><input class="cell" name="c7" type="button"  onclick="move(this);" value="" ></td>
-                    <td class="cell"><input class="cell" name="c8" type="button"  onclick="move(this);" value="" ></td>
-                    <td class="cell"><input class="cell" name="c9" type="button"  onclick="move(this);" value="" ></td>
+                    <td class="cell"><input class="cell" name="c7" type="button"  onclick="strategy.move(this);" value="" ></td>
+                    <td class="cell"><input class="cell" name="c8" type="button"  onclick="strategy.move(this);" value="" ></td>
+                    <td class="cell"><input class="cell" name="c9" type="button"  onclick="strategy.move(this);" value="" ></td>
                     </tr><tr>
-                    <td class="cell"><input class="cell" name="c4" type="button"  onclick="move(this);" value="" ></td>
-                    <td class="cell"><input class="cell" name="c5" type="button"  onclick="move(this);" value="" ></td>
-                    <td class="cell"><input class="cell" name="c6" type="button"  onclick="move(this);" value="" ></td>
+                    <td class="cell"><input class="cell" name="c4" type="button"  onclick="strategy.move(this);" value="" ></td>
+                    <td class="cell"><input class="cell" name="c5" type="button"  onclick="strategy.move(this);" value="" ></td>
+                    <td class="cell"><input class="cell" name="c6" type="button"  onclick="strategy.move(this);" value="" ></td>
                   </tr>
                   <tr>
-                    <td class="cell"><input class="cell" name="c1" type="button"  onclick="move(this);" value="" ></td>
-                    <td class="cell"><input class="cell" name="c2" type="button"  onclick="move(this);" value="" ></td>
-                    <td class="cell"><input class="cell" name="c3" type="button"  onclick="move(this);" value="" ></td>
+                    <td class="cell"><input class="cell" name="c1" type="button"  onclick="strategy.move(this);" value="" ></td>
+                    <td class="cell"><input class="cell" name="c2" type="button"  onclick="strategy.move(this);" value="" ></td>
+                    <td class="cell"><input class="cell" name="c3" type="button"  onclick="strategy.move(this);" value="" ></td>
                   </tr>
               </tbody>
             </table>
@@ -44,12 +44,12 @@
 
                   <tr>
                     <th class="player">X</th>
-                    <td><input type="radio" name="real" value="X" checked="" onchange="newGame();"></td>
+                    <td><input type="radio" name="real" value="X" checked="" onchange="strategy.newGame();"></td>
                   </tr>
 
                   <tr>
                     <th class="player">O</th>
-                    <td><input type="radio" name="real" value="O" checked="" onchange="newGame();"></td>
+                    <td><input type="radio" name="real" value="O" checked="" onchange="strategy.newGame();"></td>
                   </tr>
 
 
@@ -57,7 +57,7 @@
               </table>
 
               <p>
-                <input type="button" name="newgame" value="New Game" accesskey="n" onclick="newGame();">
+                <input type="button" name="newgame" value="New Game" accesskey="n" onclick="strategy.newGame();">
               </p>
 
             </td>
