@@ -2,7 +2,9 @@ var strategy = (function(){
     var turn = -1,
         tie = 0,
         oWin = 0,
-        xWin = 0;
+        xWin = 0,
+        firstPlayer = "X",
+        secondPlayer = "O";
     var cells;
 
 
@@ -181,8 +183,8 @@ var strategy = (function(){
         for (var i=0; i<9; i++){
             var cell = cells[i];
             var value = 0;
-            if (cell.value.indexOf('X') != -1) value = 0x3;
-            if (cell.value.indexOf('O') != -1) value = 0x2;
+            if (cell.value.indexOf(firstPlayer) != -1) value = 0x3;
+            if (cell.value.indexOf(secondPlayer) != -1) value = 0x2;
             state |= value << (i*2);
         }
         return state;
@@ -283,15 +285,16 @@ var strategy = (function(){
     function drawState(state){
         var winner = detectWin(state);
 
+
         for (var i=0; i<9; i++){
             var value = '';
             if (isCellSet(state, i)){
                 if ((state & (1<<(i*2))) != 0){
                     //11,  so it's X
-                    value = 'X';
+                    value = firstPlayer;
                 } else {
                     //10, so it's O
-                    value = 'O';
+                    value = secondPlayer;
                 }
             }
 
@@ -305,6 +308,10 @@ var strategy = (function(){
             }
 
             cells[i].value = value;
+        }
+        if(winner == 0x300000){
+            alert("It's a tie! Nice try!");
+        
         }
     }
 
