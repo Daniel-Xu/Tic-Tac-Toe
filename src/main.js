@@ -12,7 +12,6 @@ require.config({
 });
 
 require(['operation', 'underscore'], function(operation, _){
-
     operation.newGame()
     var cells = document.getElementsByClassName('handle')
 
@@ -20,5 +19,18 @@ require(['operation', 'underscore'], function(operation, _){
         item.addEventListener("click", function(){
             operation.move(this)
         })  
+    })
+
+    var players = document.getElementsByClassName("player-option")
+
+    _.each(players,function(item, i){
+        item.addEventListener("change", function(){
+            operation.newGame()
+        })
+    })
+    
+    var newButton = document.getElementById("new-button")
+    newButton.addEventListener('click', function(){
+        operation.newGame()
     })
 });

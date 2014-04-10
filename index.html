@@ -43,12 +43,12 @@
 
                   <tr>
                     <th class="player">X</th>
-                    <td><input type="radio" name="real" value="X" checked="" onchange="strategy.newGame();"></td>
+                    <td><input class="player-option" type="radio" name="real" value="X" checked="" ></td>
                   </tr>
 
                   <tr>
                     <th class="player">O</th>
-                    <td><input type="radio" name="real" value="O" checked="" onchange="strategy.newGame();"></td>
+                    <td><input class="player-option" type="radio" name="real" value="O" checked="" ></td>
                   </tr>
 
 
@@ -56,7 +56,7 @@
               </table>
 
               <p>
-                <input type="button" name="newgame" value="New Game" accesskey="n" onclick="strategy.newGame();">
+                <input id="new-button" type="button" name="newgame" value="New Game" accesskey="n">
               </p>
 
             </td>
