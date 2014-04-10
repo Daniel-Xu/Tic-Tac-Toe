@@ -11,7 +11,7 @@ require.config({
 
 });
 
-require(['operation', 'underscore'], function(operation, _){
+require(['operation', 'underscore', 'cell_init'], function(operation, _, cellsInit){
     operation.newGame()
     var cells = document.getElementsByClassName('handle')
 
@@ -33,4 +33,11 @@ require(['operation', 'underscore'], function(operation, _){
     newButton.addEventListener('click', function(){
         operation.newGame()
     })
+
+
+    var player1 = document.getElementById('player1')
+    var player2 = document.getElementById('player2')
+
+    player1.innerHTML = cellsInit.getFirstPlayer()
+    player2.innerHTML = cellsInit.getSecondPlayer()
 });
