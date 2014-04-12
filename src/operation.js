@@ -1,6 +1,6 @@
 define(['cell_init', 'status', 'underscore'], function(cellsInit, status, _){
 
-    var turn = cellsInit.getNextTurn()
+    var currentPlayer = cellsInit.getCurrentPlayer()
     var cells = cellsInit.getCells()
     var firstPlayer = cellsInit.getFirstPlayer()
     var secondPlayer = cellsInit.getSecondPlayer()
@@ -47,12 +47,11 @@ define(['cell_init', 'status', 'underscore'], function(cellsInit, status, _){
             //Because the AI is unbeatable, so this is the minimum scenario
             var hope = -999;
             var goodMoves = knownStrategy(state)
-            console.log(goodMoves)
             
             //not blank or just one scenario 
             if (goodMoves.length === 0){
                 _.each(moves, function(i, index){
-                    var value = moveValue(state, i, turn, turn, 1);
+                    var value = moveValue(state, i, currentPlayer, currentPlayer, 1);
                     if (value > hope){
                         hope = value;
                         goodMoves = [];
@@ -121,27 +120,28 @@ define(['cell_init', 'status', 'underscore'], function(cellsInit, status, _){
         return [];
     }
     
-    function moveValue(istate, move, moveFor, nextTurn, depth){
+    function moveValue(istate, move, originalPlayer, currentPlayer, depth){
         //simulate the state
-        var state = stateMove(istate, move, nextTurn);
+        var state = stateMove(istate, move, currentPlayer);
         var winner = status.detectWin(state)
 
         if (winner == 'tie'){
             return 0;
         } else if (winner != 0){
-            if (moveFor == nextTurn) return 10 - depth;
+            if (originalPlayer == currentPlayer) return 10 - depth;
             else return depth - 10;
         }
         
         var hope = 999;
-        if (moveFor != nextTurn) hope = -999;
+        if (originalPlayer != currentPlayer) hope = -999;
 
         var moves = getLegalMoves(state);
 
         _.each(moves, function(i, index){
-            var value = moveValue(state, i, moveFor, -nextTurn,  depth+1);
-            if (moveFor == nextTurn && value < hope  ||moveFor != nextTurn && value > hope ){
-            hope = value;
+            var value = moveValue(state, i, originalPlayer, -currentPlayer,  depth+1);
+            if (originalPlayer == currentPlayer && value < hope  
+                ||originalPlayer != currentPlayer && value > hope ){
+                hope = value;
             }            
         })
 
@@ -149,23 +149,13 @@ define(['cell_init', 'status', 'underscore'], function(cellsInit, status, _){
 
     }
 
-    function nextTurn(){
-        //here the turn means nextTurn
-        turn = -turn;
-        if(turn == 1){
-            if(document.board.real[1].checked) perfectMove();
-        }else {
-            if(document.board.real[0].checked) perfectMove();
-        }
-    }
-
-    function stateMove(state, move, nextTurn){
+    function stateMove(state, move, currentPlayer){
         //here need to be written down
         //notice the state will be changed in the function
 
         var newState = state.slice(0);
         var value = firstPlayer;
-        if (nextTurn == -1) value = secondPlayer;
+        if (currentPlayer == -1) value = secondPlayer;
         newState[move] = value
         return newState
     }
@@ -179,21 +169,31 @@ define(['cell_init', 'status', 'underscore'], function(cellsInit, status, _){
 
                 _.each(cells, function(ele, i){
                     if(ele == cell){
-                        state = stateMove(state, i, turn);
+                        state = stateMove(state, i, currentPlayer);
                     }
                 
                 })
 
                 status.drawState(state);
-                nextTurn();
+                changeTurn();
             }
         }
     }
 
+    function changeTurn(){
+        currentPlayer = -currentPlayer;
+        if(currentPlayer == 1){
+            if(document.board.real[1].checked) perfectMove();
+        }else {
+            if(document.board.real[0].checked) perfectMove();
+        }
+    }
+
     function newGame(){
-        turn = -1;
+        //-1 is secondPlayer, 1 is firstPlayer
+        currentPlayer = -1;
         status.drawState(['', '','','', '', '', '', '', '']);
-        nextTurn();
+        changeTurn();
     }
 
     return {

@@ -1,6 +1,6 @@
 define(function(){
     var cells = [];
-    var turn = -1,
+    var currentPlayer = -1,
         tie = 0,
         oWin = 0,
         xWin = 0,
@@ -20,8 +20,8 @@ define(function(){
         getSecondPlayer: function() {
             return secondPlayer
         }, 
-        getNextTurn: function(){
-            return turn
+        getCurrentPlayer: function(){
+            return currentPlayer
         }
     }
 })
