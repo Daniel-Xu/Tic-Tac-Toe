@@ -9,11 +9,11 @@ describe("presentation", function(){
 
     //})
 
-    it("should show the first player name", function(){
-        expect(getFirstPlayer()).toEqual("F")
-    })
+    //it("should show the first player name", function(){
+        //expect(getFirstPlayer()).toEqual("F")
+    //})
 
-    it("should show the second player name", function(){
-        expect(getSecondPlayer()).toEqual("K")
-    })
+    //it("should show the second player name", function(){
+        //expect(getSecondPlayer()).toEqual("K")
+    //})
 })
