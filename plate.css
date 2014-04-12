@@ -1,0 +1,41 @@
+
+body {
+ color:black;
+ background-color:white;
+ font-family:Tahoma,Verdana,Helvetica,Arial,sans-serif;
+}
+
+body form {
+    margin: 0 auto;
+}
+.cell {
+ background-color:#3498db;
+ color:white;
+ font-size:2cm;
+ font-family:Courier New,Courier,monospaced;
+ font-weight:bold;
+}
+input.cell {
+ border:none;
+ width:2cm;
+ vertical-align:bottom;
+}
+td.cell {
+ border:thick white outset;
+}
+.board {
+ border:thin white ridge;
+ background-color:white;
+ margin-right:1cm;
+}
+.winstat {
+ color:black;
+ background-color:white;
+ border:none;
+}
+.player {
+ font-family:Courier New,Courier,monospaced;
+ font-weight:bold;
+ font-size:150%;
+}
+

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="plate.css">
+  </head>
+
+  <body>
+
+    <form name="board" onsubmit="return false;">
+      <table border="0">
+        <tbody>
+          <tr>
+            <td valign="top">
+              <table align="left" class="board" cellspacing="6">
+                <tbody><tr>
+                    <td class="cell"><input class="cell handle" name="c7" type="button"  value="" ></td>
+                    <td class="cell"><input class="cell handle" name="c8" type="button"  value="" ></td>
+                    <td class="cell"><input class="cell handle" name="c9" type="button"  value="" ></td>
+                    </tr><tr>
+                    <td class="cell"><input class="cell handle" name="c4" type="button"  value="" ></td>
+                    <td class="cell"><input class="cell handle" name="c5" type="button"  value="" ></td>
+                    <td class="cell"><input class="cell handle" name="c6" type="button"  value="" ></td>
+                  </tr>
+                  <tr>
+                    <td class="cell"><input class="cell handle" name="c1" type="button"  value="" ></td>
+                    <td class="cell"><input class="cell handle" name="c2" type="button"  value="" ></td>
+                    <td class="cell"><input class="cell handle" name="c3" type="button"  value="" ></td>
+                  </tr>
+              </tbody>
+            </table>
+
+            </td>
+            <td valign="top">
+              <h1>Tic-Tac-Toe</h1>
+              <table border="1" cellpadding="3">
+                <tbody>
+                  <tr>
+                    <th>Player</th>
+                    <th>Real</th>
+                  </tr>
+
+                  <tr>
+                    <th id="player1"></th>
+                    <td><input class="player-option" type="radio" name="real" value="" ></td>
+                  </tr>
+
+                  <tr>
+                    <th id="player2"></th>
+                    <td><input class="player-option" type="radio" name="real" value="" checked></td>
+                  </tr>
+
+
+                </tbody>
+              </table>
+
+              <p>
+                <input id="new-button" type="button" name="newgame" value="New Game" accesskey="n">
+              </p>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+
+　  <script src="src/lib/require.js" data-main="src/main" ></script>
+    <script>
+    
+    </script>
+  </body>
+</html>
+
