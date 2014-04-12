@@ -46,7 +46,8 @@ define(['cell_init', 'status', 'underscore'], function(cellsInit, status, _){
 
             //Because the AI is unbeatable, so this is the minimum scenario
             var hope = -999;
-            var goodMoves = []
+            var goodMoves = knownStrategy(state)
+            console.log(goodMoves)
             
             //not blank or just one scenario 
             if (goodMoves.length === 0){
@@ -66,6 +67,60 @@ define(['cell_init', 'status', 'underscore'], function(cellsInit, status, _){
         }
     }
 
+
+    function isJustOneSet(state, i){
+        var remainEle =  _.without(state, state[i])
+
+        var isRemainsBlank = _.every(remainEle, function(ele, i){
+            return status.isCellBlank(remainEle, i)
+        })
+
+        if(status.isCellSet(state, i) && isRemainsBlank)
+            return true
+
+        return false
+    
+    }
+
+    function knownStrategy(state){
+        //all blank
+        if (_.every(state, function(ele, i){
+            return status.isCellBlank(state, i)
+        })) 
+            return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+        //4 center 
+        //if one player fills the center, the best move will be 
+        //corner, or you will lose
+        if(isJustOneSet(state, 4)) {
+            return [0, 2, 6, 8] 
+        }
+
+        //0 2 6 8  
+        //if corner is filled, then you must take the center
+        //or you will fail quickly
+        if(isJustOneSet(state, 0) 
+          || isJustOneSet(state,2)
+          || isJustOneSet(state, 6)
+          || isJustOneSet(state, 8))
+          return [4]
+
+
+        //1 3 5 7 edge
+        // if one use choose edges, the other should choose cell that are in same row
+        // or column
+        if(isJustOneSet(state, 1))
+            return [0, 2, 4, 7]
+        if(isJustOneSet(state, 3))
+            return [0,4, 5,6]
+        if(isJustOneSet(state, 5))
+            return [2, 3, 4, 8]
+        if(isJustOneSet(state, 7))
+            return [1, 4, 6, 8]
+
+        return [];
+    }
+    
     function moveValue(istate, move, moveFor, nextTurn, depth){
         //simulate the state
         var state = stateMove(istate, move, nextTurn);

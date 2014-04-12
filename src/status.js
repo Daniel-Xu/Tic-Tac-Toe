@@ -55,8 +55,6 @@ define(['cell_init', 'underscore'], function(cellsInit, _){
         if(_.contains(state, ''))
             return false
 
-
-
         return true
     }
 
