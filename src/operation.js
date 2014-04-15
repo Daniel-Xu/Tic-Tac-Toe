@@ -4,6 +4,7 @@ define(['cell_init', 'status', 'underscore'], function(cellsInit, status, _){
     var cells = cellsInit.getCells()
     var firstPlayer = cellsInit.getFirstPlayer()
     var secondPlayer = cellsInit.getSecondPlayer()
+    var turnEnum = cellsInit.getTurnEnum()
 
     function getLegalMoves(state){
         
@@ -155,7 +156,7 @@ define(['cell_init', 'status', 'underscore'], function(cellsInit, status, _){
 
         var newState = state.slice(0);
         var value = firstPlayer;
-        if (currentPlayer == -1) value = secondPlayer;
+        if (currentPlayer == turnEnum.secondPlayer) value = secondPlayer;
         newState[move] = value
         return newState
     }
@@ -182,7 +183,7 @@ define(['cell_init', 'status', 'underscore'], function(cellsInit, status, _){
 
     function changeTurn(){
         currentPlayer = -currentPlayer;
-        if(currentPlayer == 1){
+        if(currentPlayer == turnEnum.firstPlayer){
             if(document.board.real[1].checked) perfectMove();
         }else {
             if(document.board.real[0].checked) perfectMove();
@@ -191,7 +192,7 @@ define(['cell_init', 'status', 'underscore'], function(cellsInit, status, _){
 
     function newGame(){
         //-1 is secondPlayer, 1 is firstPlayer
-        currentPlayer = -1;
+        currentPlayer = turnEnum.secondPlayer;
         status.drawState(['', '','','', '', '', '', '', '']);
         changeTurn();
     }
