@@ -1,5 +1,16 @@
 define(["underscore"], function(_){
 
+    var wins = [
+        [0, 1, 2], 
+        [3, 4, 5],
+        [6, 7, 8], 
+        [0, 3, 6], 
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ]
+
     function Board(el) {
         this.element = el
         this.state = this.getState()
@@ -52,18 +63,8 @@ define(["underscore"], function(_){
         return legalMove
     }
 
+    //need to be modified
     Board.prototype.detectWin = function(){
-        var wins = [
-            [0, 1, 2], 
-            [3, 4, 5],
-            [6, 7, 8], 
-            [0, 3, 6], 
-            [1, 4, 7],
-            [2, 5, 8],
-            [0, 4, 8],
-            [2, 4, 6]
-        ]
-
         var winner = _.find(wins, function(situation){
             return (this.state[situation[0]] === this.state[situation[1]]
               && this.state[situation[0]] === this.state[situation[2]]
@@ -76,10 +77,8 @@ define(["underscore"], function(_){
         if(this.isFull(this.state))
             return "tie"
 
-
         return 0
     }       
-
 
     return Board
 })

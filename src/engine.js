@@ -1,14 +1,7 @@
 define(["underscore"], function(_){
 
-    function Engine() {
-
-    }
+    function Engine() {}
     
-    function _getRandom(moves) {
-        //moveNum is random num in [0, numMove]
-        return moves[Math.floor(Math.random()*(moves.length))]
-    }
-
     Engine.prototype.moveRandom = function(game, moves){
         var numMoves = moves.length;
         if (numMoves > 0){
@@ -16,7 +9,7 @@ define(["underscore"], function(_){
             game.board.element[moveNum].play(game)
         }
     }
-   
+
     Engine.prototype.perfectMove = function(game){
         var currentPlayer = game.currentPlayer
         var board = game.board
@@ -25,8 +18,7 @@ define(["underscore"], function(_){
         if (winner == 0){
             var moves = board.getLegalMoves();
             var hope = -999;
-            //var goodMoves = knownStrategy(state)
-            var goodMoves = []
+            var goodMoves = _knownStrategy(board.state)
             
             if (goodMoves.length === 0){
                 _.each(moves, function(i, index){
@@ -44,6 +36,47 @@ define(["underscore"], function(_){
             this.moveRandom(game, goodMoves);
         }
     }
+
+    function _getRandom(moves) {
+        //moveNum is random num in [0, numMove]
+        return moves[Math.floor(Math.random()*(moves.length))]
+    }
+   
+    function _isJustOneSet(state, i){
+        var remainEle =  _.without(state, state[i])
+        var isRemainsBlank = _.every(remainEle, function(ele, i){
+            return ele === ''
+        })
+
+        return ((state[i] !== "") && isRemainsBlank)
+    }
+
+    function _isJustOneCornerSet(state) {
+        return (_isJustOneSet(state, 0) || _isJustOneSet(state,2)
+                || _isJustOneSet(state, 6) || _isJustOneSet(state, 8))
+    }
+
+    function _knownStrategy(state){
+        if(state.join("") === "") 
+            return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+        if(_isJustOneSet(state, 4)) 
+            return [0, 2, 6, 8] 
+
+        if(_isJustOneCornerSet(state))
+            return [4]
+
+        if(_isJustOneSet(state, 1))
+            return [0, 2, 4, 7]
+        if(_isJustOneSet(state, 3))
+            return [0,4, 5,6]
+        if(_isJustOneSet(state, 5))
+            return [2, 3, 4, 8]
+        if(_isJustOneSet(state, 7))
+            return [1, 4, 6, 8]
+
+        return [];
+    } 
 
     function _moveValue(board, move, originalPlayer, currentPlayer, depth){
         var newBoard = _.extend({state: []}, board)
