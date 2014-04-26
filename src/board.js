@@ -64,9 +64,6 @@ define(["underscore"], function(_){
             [2, 4, 6]
         ]
 
-        if(this.isFull(this.state))
-            return "tie"
-
         var winner = _.find(wins, function(situation){
             return (this.state[situation[0]] === this.state[situation[1]]
               && this.state[situation[0]] === this.state[situation[2]]
@@ -75,6 +72,10 @@ define(["underscore"], function(_){
 
         if(winner !== undefined)
             return winner
+
+        if(this.isFull(this.state))
+            return "tie"
+
 
         return 0
     }       
