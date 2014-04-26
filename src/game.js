@@ -1,4 +1,4 @@
-define(["underscore", "cell", "board", "control"], function(_, CellConstructor, BoardConstructor, ControlConstructor){
+define(["underscore", "cell", "board", "control", "engine"], function(_, CellConstructor, BoardConstructor, ControlConstructor, EngineConstructor){
 
     var turnEnum = {
         firstPlayer:  1,
@@ -10,11 +10,11 @@ define(["underscore", "cell", "board", "control"], function(_, CellConstructor, 
         secondPlayerSymbol: "O"
     }
 
-
     function Game(cells, controlPanel) {
         this.currentPlayer = turnEnum.secondPlayer
         this.board = this.createBoard(cells)
         this.controlPanel = this.createControlPanel(controlPanel)
+        this.engine = this.createEngine()
         this.listenFromUser()
     }
 
@@ -28,13 +28,26 @@ define(["underscore", "cell", "board", "control"], function(_, CellConstructor, 
         return new BoardConstructor(_domToCell(pureCells))
     }
 
+    Game.prototype.createEngine = function() {
+        return new EngineConstructor()
+    }
+
     Game.prototype.createControlPanel = function(controlPanel) {
-        return new ControlConstructor(controlPanel)
+        var panel =  new ControlConstructor(controlPanel)
+        this.changePlayerList()
+        return panel
+    }
+
+    Game.prototype.changePlayerList = function() {
+        var player1 = document.getElementById('player1')
+        var player2 = document.getElementById('player2')
+        player1.innerHTML = playerSymbol.firstPlayerSymbol
+        player2.innerHTML = playerSymbol.secondPlayerSymbol
     }
 
     Game.prototype.listenFromBoard = function(){
         _.each(this.board.element, function(cell, i){
-            cell.element.addEventListener("click", _.bind(this.play, cell, this))
+            cell.element.addEventListener("click", _.bind(cell.play, cell, this))
         }, this)
     }
     Game.prototype.listenFromPanel = function(){
@@ -49,15 +62,6 @@ define(["underscore", "cell", "board", "control"], function(_, CellConstructor, 
         this.listenFromPanel()
     }
 
-    Game.prototype.play = function(game){
-        if (this.element.value === '' && game.board.winner === 0){
-            this.drawCell(game.currentPlayerSymbol(game.currentPlayer))
-            game.board.updateState()
-            game.board.drawBoard()
-            game.changeTurn()
-        }
-    }
-
     Game.prototype.currentPlayerSymbol = function(player) {
         return player === turnEnum.firstPlayer ? 
                 playerSymbol.firstPlayerSymbol :playerSymbol.secondPlayerSymbol
@@ -66,15 +70,16 @@ define(["underscore", "cell", "board", "control"], function(_, CellConstructor, 
     Game.prototype.newGame = function(){
         this.currentPlayer = turnEnum.secondPlayer;
         this.board.clearUpBoard()
+        this.changeTurn()
     }
 
     Game.prototype.changeTurn = function changeTurn(){
         this.currentPlayer = - this.currentPlayer;
 
         if(this.currentPlayer === turnEnum.firstPlayer){
-            if(document.board.real[1].checked) perfectMove();
+            if(document.board.real[1].checked) this.engine.perfectMove(this);
         }else {
-            if(document.board.real[0].checked) perfectMove();
+            if(document.board.real[0].checked) this.engine.perfectMove(this);
         }
     }
 

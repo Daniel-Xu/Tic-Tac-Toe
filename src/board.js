@@ -41,11 +41,18 @@ define(["underscore"], function(_){
             cell.element.value = ""
             cell.element.style.backgroundColor = '#3498db'
         })
+        this.updateState()
+    }
+    
+    Board.prototype.getLegalMoves = function() {
+        var legalMove = []
+        _.each(this.state, function(state, i){
+            if(state === '') legalMove.push(i)
+        })
+        return legalMove
     }
 
-
     Board.prototype.detectWin = function(){
-
         var wins = [
             [0, 1, 2], 
             [3, 4, 5],
