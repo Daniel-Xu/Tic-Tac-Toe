@@ -62,15 +62,17 @@ define(["underscore"], function(_){
         })
         return legalMove
     }
-
-    //need to be modified
-    Board.prototype.detectWin = function(){
-        var winner = _.find(wins, function(situation){
+    
+    Board.prototype.findWinner = function(){
+        return  _.find(wins, function(situation){
             return (this.state[situation[0]] === this.state[situation[1]]
-              && this.state[situation[0]] === this.state[situation[2]]
-              && this.state[situation[0]] !== '') 
+                    && this.state[situation[0]] === this.state[situation[2]]
+                    && this.state[situation[0]] !== '') 
         }, this)
+    }
 
+    Board.prototype.detectWin = function(){
+        var winner = this.findWinner()
         if(winner !== undefined)
             return winner
 
