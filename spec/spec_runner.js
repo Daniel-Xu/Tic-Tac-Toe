@@ -1,13 +1,12 @@
 require.config({
-　  baseUrl: "lib/",
+　  baseUrl: "src/",
 
     paths: {
-        'underscore': '../src/lib/underscore',
-        'jasmine' : 'jasmine-2.0.0/jasmine',
-        'jasmine-html' : 'jasmine-2.0.0/jasmine-html',
-        'jasmine-boot' : 'jasmine-2.0.0/boot',
-        'spec' : '../spec',
-        'src': '../src'
+        'underscore': 'lib/underscore',
+        'jasmine' : '../lib/jasmine-2.0.0/jasmine',
+        'jasmine-html' : '../lib/jasmine-2.0.0/jasmine-html',
+        'jasmine-boot' : '../lib/jasmine-2.0.0/boot',
+        'spec': '../spec'
     },
 
     shim: {
@@ -27,8 +26,9 @@ require.config({
 
 require(['jasmine-boot'], function(jasmine) {
     var specs = [];
-    specs.push('spec/test')
     specs.push('spec/test_cell')
+    specs.push('spec/test_board')
+    specs.push('spec/engine')
 
     require(specs, function(spec) {
         window.onload();
