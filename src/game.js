@@ -77,14 +77,11 @@ define(["underscore", "cell", "board", "control", "engine"], function(_, CellCon
         this.currentPlayer = - this.currentPlayer;
 
         if(this.currentPlayer === turnEnum.firstPlayer){
-            if(document.board.real[1].checked) this.engine.perfectMove(this);
+            if(document.board.real[1].checked) this.board.perfectMove(this);
         }else {
-            if(document.board.real[0].checked) this.engine.perfectMove(this);
+            if(document.board.real[0].checked) this.board.perfectMove(this);
         }
     }
 
-    return {
-        Game: Game, 
-        turnEnum: turnEnum
-    }
+    return Game
 })

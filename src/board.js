@@ -1,5 +1,4 @@
 define(["underscore"], function(_){
-
     var wins = [
         [0, 1, 2], 
         [3, 4, 5],
@@ -55,14 +54,6 @@ define(["underscore"], function(_){
         this.updateState()
     }
     
-    Board.prototype.getLegalMoves = function() {
-        var legalMove = []
-        _.each(this.state, function(state, i){
-            if(state === '') legalMove.push(i)
-        })
-        return legalMove
-    }
-    
     Board.prototype.findWinner = function(){
         return  _.find(wins, function(situation){
             return (this.state[situation[0]] === this.state[situation[1]]
@@ -73,14 +64,37 @@ define(["underscore"], function(_){
 
     Board.prototype.detectWin = function(){
         var winner = this.findWinner()
-        if(winner !== undefined)
-            return winner
-
-        if(this.isFull(this.state))
-            return "tie"
+        if(winner !== undefined) return winner
+        if(this.isFull(this.state)) return "tie"
 
         return 0
     }       
+
+    Board.prototype.getLegalMoves = function() {
+        var legalMove = []
+        _.each(this.state, function(state, i){
+            if(state === '') legalMove.push(i)
+        })
+        return legalMove
+    }
+
+    function _getRandom(moves) {
+        //moveNum is random num in [0, numMove]
+        return moves[Math.floor(Math.random()*(moves.length))]
+    }
+
+    Board.prototype.moveRandom = function(game, moves){
+        var numMoves = moves.length;
+        if (numMoves > 0){
+            var moveNum = _getRandom(moves)
+            this.element[moveNum].play(game)
+        }
+    }
+
+    Board.prototype.perfectMove = function(game){
+        var moves = game.engine.availabeForPerfectMove(game)
+        this.moveRandom(game, moves) 
+    }
 
     return Board
 })

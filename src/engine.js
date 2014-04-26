@@ -2,15 +2,7 @@ define(["underscore"], function(_){
 
     function Engine() {}
     
-    Engine.prototype.moveRandom = function(game, moves){
-        var numMoves = moves.length;
-        if (numMoves > 0){
-            var moveNum = _getRandom(moves)
-            game.board.element[moveNum].play(game)
-        }
-    }
-
-    Engine.prototype.perfectMove = function(game){
+    Engine.prototype.availabeForPerfectMove = function(game){
         var currentPlayer = game.currentPlayer
         var board = game.board
         var winner = board.winner
@@ -33,14 +25,11 @@ define(["underscore"], function(_){
                     }
                 })
             }
-            this.moveRandom(game, goodMoves);
+
+            return goodMoves
         }
     }
 
-    function _getRandom(moves) {
-        //moveNum is random num in [0, numMove]
-        return moves[Math.floor(Math.random()*(moves.length))]
-    }
    
     function _isJustOneSet(state, i){
         var remainEle =  _.without(state, state[i])
@@ -62,7 +51,6 @@ define(["underscore"], function(_){
 
         if(_isJustOneSet(state, 4)) 
             return [0, 2, 6, 8] 
-
         if(_isJustOneCornerSet(state))
             return [4]
 
@@ -105,9 +93,7 @@ define(["underscore"], function(_){
         })
 
         return hope;
-
     }
-
 
     return Engine
 })
