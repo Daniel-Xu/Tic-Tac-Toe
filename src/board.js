@@ -1,14 +1,5 @@
-define(["underscore"], function(_){
-    var wins = [
-        [0, 1, 2], 
-        [3, 4, 5],
-        [6, 7, 8], 
-        [0, 3, 6], 
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6]
-    ]
+define(["underscore", "setting"], function(_, setting){
+    var wins = setting.wins
 
     function Board(el) {
         this.element = el
@@ -58,7 +49,7 @@ define(["underscore"], function(_){
         return  _.find(wins, function(situation){
             return (this.state[situation[0]] === this.state[situation[1]]
                     && this.state[situation[0]] === this.state[situation[2]]
-                    && this.state[situation[0]] !== '') 
+                    && this.state[situation[0]] !== '' && this.state[situation[0]] !== undefined) 
         }, this)
     }
 

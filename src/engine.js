@@ -1,7 +1,9 @@
-define(["underscore"], function(_){
-
+define(["underscore", "setting"], function(_, setting){
     function Engine() {}
     
+    var playerSymbol = setting.playerSymbol
+    var turnEnum = setting.turnEnum
+
     Engine.prototype.availabeForPerfectMove = function(game){
         var currentPlayer = game.currentPlayer
         var board = game.board
@@ -19,7 +21,6 @@ define(["underscore"], function(_){
                         hope = value;
                         goodMoves = [];
                     }
-
                     if (hope == value){
                         goodMoves.push(i);
                     }
@@ -30,7 +31,6 @@ define(["underscore"], function(_){
         }
     }
 
-   
     function _isJustOneSet(state, i){
         var remainEle =  _.without(state, state[i])
         var isRemainsBlank = _.every(remainEle, function(ele, i){
@@ -65,12 +65,19 @@ define(["underscore"], function(_){
 
         return [];
     } 
-
-    function _moveValue(board, move, originalPlayer, currentPlayer, depth){
+    
+    function _cloneBoard(board, move, currentPlayer){
         var newBoard = _.extend({state: []}, board)
         newBoard.state = board.state.slice(0)
-        newBoard.state[move] = currentPlayer === 1 ? 'X' : 'O'
-        var winner =  newBoard.detectWin()
+        newBoard.state[move] = 
+            currentPlayer === turnEnum.firstPlayer ? playerSymbol.firstPlayerSymbol : playerSymbol.secondPlayerSymbol
+
+        return newBoard
+    }
+
+    function _moveValue(board, move, originalPlayer, currentPlayer, depth){
+        var newBoard = _cloneBoard(board, move, currentPlayer)
+        var winner = newBoard.detectWin()
 
         if (winner == 'tie'){
             return 0;
@@ -79,8 +86,7 @@ define(["underscore"], function(_){
             else return depth - 10;
         }
         
-        var hope = 999;
-        if (originalPlayer != currentPlayer) hope = -999;
+        var hope = (originalPlayer !== currentPlayer)? -999:999
         var moves = newBoard.getLegalMoves();
 
         _.each(moves, function(i, index){
