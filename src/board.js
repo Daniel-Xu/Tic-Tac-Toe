@@ -19,9 +19,7 @@ define(["underscore", "setting"], function(_, setting){
     }
 
     Board.prototype.isFull = function(){
-        if(_.contains(this.state, ''))
-            return false
-        return true
+        return !(_.contains(this.state, ''))
     }
 
     function _isArray(obj){
