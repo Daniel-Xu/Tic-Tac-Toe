@@ -1,6 +1,5 @@
 define(["underscore", "setting"], function(_, setting){
     function Engine() {}
-    
     var playerSymbol = setting.playerSymbol
     var turnEnum = setting.turnEnum
 

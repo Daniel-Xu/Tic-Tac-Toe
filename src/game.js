@@ -1,14 +1,16 @@
-define(["underscore", "cell", "board", "control", "engine"], function(_, CellConstructor, BoardConstructor, ControlConstructor, EngineConstructor){
+define(["underscore", "cell", "board", "control", "engine", "setting"], function(_, CellConstructor, BoardConstructor, ControlConstructor, EngineConstructor, setting){
+    var turnEnum = setting.turnEnum
+    var playerSymbol = setting.playerSymbol
+    //var turnEnum = {
+        //firstPlayer:  1,
+        //secondPlayer: -1
+    //}
 
-    var turnEnum = {
-        firstPlayer:  1,
-        secondPlayer: -1
-    }
+    //var playerSymbol = {
+        //firstPlayerSymbol: "X", 
+        //secondPlayerSymbol: "O"
+    //}
 
-    var playerSymbol = {
-        firstPlayerSymbol: "X", 
-        secondPlayerSymbol: "O"
-    }
 
     function Game(cells, controlPanel) {
         this.currentPlayer = turnEnum.secondPlayer
