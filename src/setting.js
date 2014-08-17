@@ -21,9 +21,22 @@ define(function(){
         [2, 4, 6]
     ]
 
+    var b = document.board
+    var domCells = new Array(b.c1,b.c2,b.c3,b.c4,b.c5,b.c6,b.c7,b.c8,b.c9)
+
+    var controlPanel = {
+        newButton: document.getElementById("new-button"),
+        playerList: document.getElementsByClassName("player-option")
+    }
+
+    var pureCells = ["", "", "", "", "", "", "", "", ""]
+
     return {
         wins: wins, 
         turnEnum: turnEnum,
-        playerSymbol: playerSymbol
+        playerSymbol: playerSymbol,
+        domCells: domCells,
+        controlPanel: controlPanel,
+        pureCells: pureCells
     }
 })
