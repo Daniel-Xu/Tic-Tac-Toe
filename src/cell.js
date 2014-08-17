@@ -1,26 +1,31 @@
 define(["underscore"], function(_){
-    function Cell(el) {
-        this.element = el
+    function Cell(el,i) {
+        //this.element = el
+        this.value = el
+        this.index = i
     }
 
     Cell.prototype.isBlank = function(){
-        return this.element.value === ""
+        return this.value === ""
     }
 
     Cell.prototype.isSet = function(){
-        return this.element.value !== ""
+        return this.value !== ""
     }
 
-    Cell.prototype.drawCell = function(currentPlayerValue) {
-        this.element.value = currentPlayerValue
+    Cell.prototype.updateValue = function(currentPlayerValue) {
+        this.value = currentPlayerValue
     }
 
     Cell.prototype.play = function(game){
-        if (this.element.value === '' && game.board.winner === 0){
-            this.drawCell(game.currentPlayerSymbol(game.currentPlayer))
+        if (this.value === '' && game.board.winner === 0){
+            this.updateValue(game.currentPlayerSymbol(game.currentPlayer))
+
             game.board.updateState()
-            game.board.drawBoard()
+            game.render.drawCell(game, this.index)
+            game.render.drawWhenWinnerOccurs(game)
             game.changeTurn()
+
         }
     }
 
