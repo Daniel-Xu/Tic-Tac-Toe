@@ -1,19 +1,24 @@
-define(["underscore", "cell", "board", "control", "engine", "setting"], function(_, CellConstructor, BoardConstructor, ControlConstructor, EngineConstructor, setting){
+define(["underscore", "cell", "board", "control", "engine","render","setting"], function(_, CellConstructor, BoardConstructor, ControlConstructor, EngineConstructor, RenderConstructor, setting){
     var turnEnum = setting.turnEnum
     var playerSymbol = setting.playerSymbol
+    var pureCells = setting.pureCells
 
-    function Game(cells, controlPanel) {
+    function Game() {
         this.currentPlayer = turnEnum.secondPlayer
-        this.board = this.createBoard(cells)
-        this.controlPanel = this.createControlPanel(controlPanel)
+        this.board = this.createBoard(pureCells)
         this.engine = this.createEngine()
-        this.listenFromUser()
+        this.render = this.createRender()
+        this.render.handleDomListener(this)
     }
 
     function _domToCell(cells) {
-        return _.map(cells, function(el){
-            return new CellConstructor(el)
+        return _.map(cells, function(el, i){
+            return new CellConstructor(el, i)
         })
+    }
+
+    Game.prototype.createRender = function() {
+        return new RenderConstructor() 
     }
 
     Game.prototype.createBoard = function(pureCells) {
@@ -24,35 +29,6 @@ define(["underscore", "cell", "board", "control", "engine", "setting"], function
         return new EngineConstructor()
     }
 
-    Game.prototype.createControlPanel = function(controlPanel) {
-        var panel =  new ControlConstructor(controlPanel)
-        this.changePlayerList()
-        return panel
-    }
-
-    Game.prototype.changePlayerList = function() {
-        var player1 = document.getElementById('player1')
-        var player2 = document.getElementById('player2')
-        player1.innerHTML = playerSymbol.firstPlayerSymbol
-        player2.innerHTML = playerSymbol.secondPlayerSymbol
-    }
-
-    Game.prototype.listenFromBoard = function(){
-        _.each(this.board.element, function(cell, i){
-            cell.element.addEventListener("click", _.bind(cell.play, cell, this))
-        }, this)
-    }
-    Game.prototype.listenFromPanel = function(){
-        _.each(this.controlPanel.plist, function(playerOpt, i){
-            playerOpt.addEventListener("change", _.bind(this.newGame, this))
-        }, this)
-        this.controlPanel.button.addEventListener('click', _.bind(this.newGame, this))
-    }
-
-    Game.prototype.listenFromUser = function(){
-        this.listenFromBoard()
-        this.listenFromPanel()
-    }
 
     Game.prototype.currentPlayerSymbol = function(player) {
         return player === turnEnum.firstPlayer ? 
@@ -61,7 +37,7 @@ define(["underscore", "cell", "board", "control", "engine", "setting"], function
 
     Game.prototype.newGame = function(){
         this.currentPlayer = turnEnum.secondPlayer;
-        this.board.clearUpBoard()
+        this.board.clearUpBoard(this)
         this.changeTurn()
     }
 
