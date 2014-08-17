@@ -2,6 +2,7 @@ define(["underscore", "setting"], function(_, setting){
     var wins = setting.wins
 
     function Board(el) {
+        // the element means elements
         this.element = el
         this.state = this.getState()
         this.winner = this.detectWin()
@@ -9,7 +10,7 @@ define(["underscore", "setting"], function(_, setting){
 
     Board.prototype.getState = function() {
         return _.map(this.element, function(cell, i){
-            return cell.element.value
+            return cell.value
         })
     }
 
@@ -22,23 +23,11 @@ define(["underscore", "setting"], function(_, setting){
         return !(_.contains(this.state, ''))
     }
 
-    function _isArray(obj){
-        return Object.prototype.toString.call(obj) === '[object Array]'
-    }
 
-    Board.prototype.drawBoard = function(){
-        if(_isArray(this.winner)){
-            _.each(this.winner, function(index){
-                this.element[index].element.style.backgroundColor = 'red'
-            }, this)
-        } 
-        if(this.winner === "tie") alert("It's a tie! Nice try!");
-    }
-
-    Board.prototype.clearUpBoard = function(){
-        _.each(this.element, function(cell){
-            cell.element.value = ""
-            cell.element.style.backgroundColor = '#3498db'
+    Board.prototype.clearUpBoard = function(game){
+        _.each(this.element, function(cell, i){
+            cell.value = ""
+            game.render.clearCell(i)
         })
         this.updateState()
     }
