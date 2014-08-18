@@ -3,10 +3,20 @@ body {
  color:black;
  background-color:white;
  font-family:Tahoma,Verdana,Helvetica,Arial,sans-serif;
+ height: 500px;
 }
 
 body table {
- margin: 0 auto;
+    margin: 0 auto ;
+}
+
+.newgame input {
+    
+    margin: 0 auto ;
+    display:block;
+}
+body form {
+    margin-top: 200px;
 }
 .cell {
  background-color:#3498db;
