@@ -5,8 +5,8 @@ body {
  font-family:Tahoma,Verdana,Helvetica,Arial,sans-serif;
 }
 
-body form {
-    margin: 0 auto;
+body table {
+ margin: 0 auto;
 }
 .cell {
  background-color:#3498db;
